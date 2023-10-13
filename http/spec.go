@@ -1,7 +1,7 @@
 package focus
 
 type Focus interface {
-	CreateActivity(title string, description string, endTimestamp int64) (*Activity, error)
+	CreateActivity(title string, description string, startTimeStamp int64, endTimestamp int64) (*Activity, error)
 	Activity(id string) (*Activity, error)
 	Activities(ids []string) ([]*Activity, error)
 	UpdateActivity(activity *Activity) (*Activity, error)

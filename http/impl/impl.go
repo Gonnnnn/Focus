@@ -11,7 +11,8 @@ func New() focus.Focus {
 	return &impl{}
 }
 
-func (i *impl) CreateActivity(title string, description string, endTimestamp int64) (*focus.Activity, error) {
+func (i *impl) CreateActivity(title string, description string, startTimestamp int64, endTimestamp int64) (*focus.Activity, error) {
+
 	return &focus.Activity{}, errors.New("not implemented")
 }
 
