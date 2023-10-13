@@ -5,8 +5,8 @@ type Focus interface {
 	CreateActivity(title string, description string, startTimeStamp int64, endTimestamp int64) (*Activity, error)
 	// Returns the activity with the given id.
 	Activity(id string) (*Activity, error)
-	// Returns the activities with the given ids.
-	Activities(ids []string) ([]*Activity, error)
+	// Returns the activities with the given ids. If ids is empty, it returns all the activities.
+	Activities() ([]*Activity, error)
 	// Updates the given activity. It returns the updated activity.
 	UpdateActivity(activity *Activity) (*Activity, error)
 	// Deletes the activity with the given id.

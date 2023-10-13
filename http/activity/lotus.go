@@ -43,7 +43,7 @@ func (l *lotus) Activity(id string) (*Activity, error) {
 	return &Activity{}, errors.New("not implemented")
 }
 
-func (l *lotus) Activities(ids []string) ([]*Activity, error) {
+func (l *lotus) Activities(ids string) ([]*Activity, error) {
 	return []*Activity{}, errors.New("not implemented")
 }
 

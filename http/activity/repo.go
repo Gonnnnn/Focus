@@ -1,15 +1,15 @@
 package activity
 
 type Repository interface {
-	// CreateActivity creates a new activity.
+	// Creates a new activity.
 	CreateActivity(id string, title string, description string, startTimestamp int64, endTimestamp int64) (*Activity, error)
-	// Activity returns the activity with the given id.
+	// Returns the activity with the given id.
 	Activity(id string) (*Activity, error)
-	// Activities returns the activities with the given ids.
+	// Returns the activities with the given ids in the descending order of the start timestamp. If ids is empty, it returns all the activities.
 	Activities(ids []string) ([]*Activity, error)
-	// UpdateActivity updates the given activity.
+	// Updates the given activity.
 	UpdateActivity(activity *Activity) (*Activity, error)
-	// DeleteActivity deletes the activity with the given id.
+	// Deletes the activity with the given id.
 	DeleteActivity(id string) error
 }
 
