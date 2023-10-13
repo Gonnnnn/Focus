@@ -6,7 +6,7 @@ type Focus interface {
 	// Returns the activity with the given id.
 	Activity(id string) (*Activity, error)
 	// Returns the activities with the given ids. If ids is empty, it returns all the activities.
-	Activities() ([]*Activity, error)
+	Activities(ids []string) ([]*Activity, error)
 	// Updates the given activity. It returns the updated activity.
 	UpdateActivity(activity *Activity) (*Activity, error)
 	// Deletes the activity with the given id.
