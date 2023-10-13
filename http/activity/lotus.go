@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/lotusdblabs/lotusdb/v2"
@@ -101,6 +102,10 @@ func (l *lotus) Activities(ids []string) ([]*Activity, error) {
 	if errs != nil {
 		return activities, fmt.Errorf("failed to get activities: %w", errs)
 	}
+
+	sort.Slice(activities, func(i, j int) bool {
+		return activities[i].StartTimestamp > activities[j].StartTimestamp
+	})
 	return activities, nil
 }
 
