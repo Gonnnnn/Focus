@@ -113,3 +113,7 @@ document
         console.error("Error:", error);
       });
   });
+
+setInterval(function () {
+  location.reload();
+}, 60000);

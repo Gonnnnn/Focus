@@ -3,6 +3,11 @@
   <head>
     <title>Activity List</title>
   </head>
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
   <body>
     <h1>Create Activity</h1>
     <form id="createActivityForm">
@@ -44,7 +49,7 @@
     <ul>
       {{ range $index, $activity := .Activities }}
       <li class="activity-item" id="{{ $index }}">
-        <div class="activity-id">
+        <div class="activity-id, hidden">
           <span><strong>ID: </strong></span>
           <span class="activity-id-value">{{ .Id }}</span>
         </div>
