@@ -19,6 +19,9 @@ func main() {
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
 
+	router.LoadHTMLGlob("cmd/*.html")
+	router.StaticFile("/list.js", "cmd/list.js")
+
 	options := lotusdb.DefaultOptions
 	options.DirPath = "/tmp/lotusdb_basic"
 	db, err := lotusdb.Open(options)

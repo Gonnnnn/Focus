@@ -37,7 +37,7 @@ func (g *ginWrapper) List(c *gin.Context) {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, ListResponse{Activities: activities})
+	c.HTML(http.StatusOK, "list.html", gin.H{"Activities": activities})
 }
 
 func (g *ginWrapper) Create(c *gin.Context) {

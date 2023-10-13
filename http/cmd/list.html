@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Activity List</title>
+  </head>
+  <body>
+    <h1>Create Activity</h1>
+    <form id="createActivityForm">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required /><br /><br />
+
+      <label for="description">Description:</label>
+      <textarea
+        id="description"
+        name="description"
+        rows="4"
+        cols="50"
+        required
+      ></textarea
+      ><br /><br />
+
+      <label for="startTime">Start Time:</label>
+      <input
+        type="datetime-local"
+        id="startTime"
+        name="startTime"
+        value=""
+        required
+      /><br /><br />
+
+      <label for="endTime">End Time:</label>
+      <input
+        type="datetime-local"
+        id="endTime"
+        name="endTime"
+        value=""
+        required
+      /><br /><br />
+
+      <input type="submit" value="Create Activity" />
+    </form>
+
+    <h1>Activity List</h1>
+    <ul>
+      {{ range $index, $activity := .Activities }}
+      <li class="activity-item" id="{{ $index }}">
+        <div class="activity-id">
+          <span><strong>ID: </strong></span>
+          <span class="activity-id-value">{{ .Id }}</span>
+        </div>
+        <div class="activity-title">
+          <span><strong>Title: </strong></span>
+          <span class="activity-title-value">{{ .Title }}</span>
+        </div>
+        <div class="activity-description">
+          <span><strong>Description: </strong></span>
+          <span class="activity-description-value">{{ .Description }}</span>
+        </div>
+        <div class="activity-start-timestamp">
+          <span><strong>Start Timestamp: </strong></span>
+          <span class="activity-start-timestamp-value"
+            >{{ .StartTimestamp }}</span
+          >
+        </div>
+        <div class="activity-end-timestamp">
+          <span><strong>End Timestamp: </strong></span>
+          <span class="activity-end-timestamp-value">{{ .EndTimestamp }}</span>
+        </div>
+      </li>
+      <br />
+      {{ end }}
+    </ul>
+
+    <script src="/list.js"></script>
+  </body>
+</html>
