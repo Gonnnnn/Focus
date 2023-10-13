@@ -84,6 +84,7 @@ document
       .then((response) => {
         if (response.ok) {
           alert("Activity created successfully!");
+          window.location.reload();
         } else {
           alert("Failed to create activity. Please try again.");
         }
