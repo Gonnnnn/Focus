@@ -2,7 +2,7 @@ package activity
 
 type Repository interface {
 	// CreateActivity creates a new activity.
-	CreateActivity(title string, description string, startTimestamp int64, endTimestamp int64) (*Activity, error)
+	CreateActivity(id string, title string, description string, startTimestamp int64, endTimestamp int64) (*Activity, error)
 	// Activity returns the activity with the given id.
 	Activity(id string) (*Activity, error)
 	// Activities returns the activities with the given ids.
