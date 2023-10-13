@@ -40,7 +40,10 @@ func main() {
 	}(db)
 
 	terminator := &terminator{sigChan: sigChan}
-	activityRepository := activity.NewLotus()
+	activityRepository, err := activity.NewLotus(db)
+	if err != nil {
+		log.Fatal(err)
+	}
 	focus := impl.New(activityRepository)
 	controller := &ginWrapper{focus: focus}
 

@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/lotusdblabs/lotusdb/v2"
-	"github.com/uber-go/multierr"
 	"go.uber.org/multierr"
 )
 
@@ -16,10 +15,25 @@ type lotus struct {
 	db *lotusdb.DB
 }
 
+var KEY_OF_KEYS = []byte("KEYS")
 var KEY_DELIMETER = ","
 
-func NewLotus() *lotus {
-	return &lotus{db: nil}
+// NewLotus creates a new Lotus repository.
+// Lotus is a key-value store. It doesn't support scan operation. So, we need to maintain the keys.
+// We use a key named "KEYS" to store all the keys. The value of "KEYS" is a string which is a list of keys separated by ",".
+// If "KEYS" doesn't exist, it has to be created before using the repository.
+func NewLotus(db *lotusdb.DB) (Repository, error) {
+	_, err := db.Get([]byte(KEY_OF_KEYS))
+	if err != nil {
+		if err.Error() != "key not found in database" {
+			return nil, fmt.Errorf("failed to get KEYS: %w", err)
+		}
+		err = db.Put([]byte(KEY_OF_KEYS), []byte("DUMMY_KEY"), nil)
+		if err != nil {
+			return nil, fmt.Errorf("failed to initialize KEYS: %w", err)
+		}
+	}
+	return &lotus{db: db}, nil
 }
 
 func (l *lotus) CreateActivity(id string, title string, description string, startTimestamp int64, endTimestamp int64) (*Activity, error) {
@@ -99,21 +113,23 @@ func (l *lotus) DeleteActivity(id string) error {
 }
 
 func (l *lotus) keys() ([]string, error) {
-	data, err := l.db.Get([]byte("KEYS"))
+	data, err := l.db.Get([]byte(KEY_OF_KEYS))
 	if err != nil {
 		return nil, fmt.Errorf("failed to get keys: %w", err)
 	}
-	return strings.Split(string(data), KEY_DELIMETER), nil
+	keys := strings.Split(string(data), KEY_DELIMETER)
+	// Remove the first element which is a dummy key.
+	return keys[1:], nil
 }
 
 func (l *lotus) createKey(key string) error {
-	data, err := l.db.Get([]byte("KEYS"))
+	data, err := l.db.Get([]byte(KEY_OF_KEYS))
 	if err != nil {
 		return fmt.Errorf("failed to get keys: %w", err)
 	}
 
 	keys := string(data)
-	err = l.db.Put([]byte("KEYS"), []byte(fmt.Sprintf("%s%s%s", keys, KEY_DELIMETER, key)), nil)
+	err = l.db.Put([]byte(KEY_OF_KEYS), []byte(fmt.Sprintf("%s%s%s", keys, KEY_DELIMETER, key)), nil)
 	if err != nil {
 		return fmt.Errorf("failed to put keys: %w", err)
 	}
