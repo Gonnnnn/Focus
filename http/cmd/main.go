@@ -20,7 +20,7 @@ func main() {
 	router := gin.Default()
 
 	router.LoadHTMLGlob("cmd/*.html")
-	router.StaticFile("/list.js", "cmd/list.js")
+	router.StaticFile("/main.js", "cmd/main.js")
 
 	options := lotusdb.DefaultOptions
 	options.DirPath = "/tmp/lotusdb_basic"
