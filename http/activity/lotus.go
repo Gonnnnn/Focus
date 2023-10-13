@@ -36,6 +36,10 @@ func (l *lotus) CreateActivity(id string, title string, description string, star
 	if err != nil {
 		return nil, err
 	}
+	err = l.createKey(id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to add the key[%s]: %w", id, err)
+	}
 	return activity, nil
 }
 
@@ -53,4 +57,17 @@ func (l *lotus) UpdateActivity(activity *Activity) (*Activity, error) {
 
 func (l *lotus) DeleteActivity(id string) error {
 	return errors.New("not implemented")
+}
+func (l *lotus) createKey(key string) error {
+	data, err := l.db.Get([]byte("KEYS"))
+	if err != nil {
+		return fmt.Errorf("failed to get keys: %w", err)
+	}
+
+	keys := string(data)
+	err = l.db.Put([]byte("KEYS"), []byte(fmt.Sprintf("%s%s%s", keys, KEY_DELIMETER, key)), nil)
+	if err != nil {
+		return fmt.Errorf("failed to put keys: %w", err)
+	}
+	return nil
 }
