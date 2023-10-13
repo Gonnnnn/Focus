@@ -10,7 +10,7 @@ go run ./cmd
 
 ## How to Use
 
-![main_image](docs/images/main_page.png)
+![main_image](docs/images/main_page_20231014.png)
 
 - Create an activity through the form on the top.
 - Check the activities below the form. It shows the ratio of the time has been passed by after you have started the activity out of the total time you have until the expected end of the activity.
