@@ -31,7 +31,8 @@ type CreateResponse struct {
 var validate = validator.New()
 
 func (g *ginWrapper) List(c *gin.Context) {
-	activities, err := g.focus.Activities([]string{})
+	ids := c.QueryArray("ids")
+	activities, err := g.focus.Activities(ids)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return

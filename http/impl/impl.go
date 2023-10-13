@@ -33,7 +33,15 @@ func (i *impl) Activity(id string) (*focus.Activity, error) {
 }
 
 func (i *impl) Activities(ids []string) ([]*focus.Activity, error) {
-	return []*focus.Activity{}, errors.New("not implemented")
+	activities, err := i.activityRepository.Activities(ids)
+	if err != nil {
+		return nil, err
+	}
+	focusActivities := make([]*focus.Activity, 0, len(activities))
+	for _, activity := range activities {
+		focusActivities = append(focusActivities, convertToFocusActivity(activity))
+	}
+	return focusActivities, nil
 }
 
 func (i *impl) UpdateActivity(activity *focus.Activity) (*focus.Activity, error) {
