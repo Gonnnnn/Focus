@@ -3,15 +3,22 @@ document.addEventListener("DOMContentLoaded", function () {
   const activityItems = document.querySelectorAll(".activity-item");
 
   activityItems.forEach(function (activityItem) {
-    const startTimestamp = parseInt(
-      activityItem
-        .querySelector(".activity-start-timestamp-value")
-        .textContent.trim()
+    const startTimestampElement = activityItem.querySelector(
+      ".activity-start-timestamp-value"
     );
-    const endTimestamp = parseInt(
-      activityItem
-        .querySelector(".activity-end-timestamp-value")
-        .textContent.trim()
+    const startTimestamp = parseInt(startTimestampElement.textContent.trim());
+
+    const endTimestampElement = activityItem.querySelector(
+      ".activity-end-timestamp-value"
+    );
+    const endTimestamp = parseInt(endTimestampElement.textContent.trim());
+
+    // Format the start and end timestamps
+    startTimestampElement.textContent = formatKoreanTime(
+      new Date(startTimestamp / 1000000)
+    );
+    endTimestampElement.textContent = formatKoreanTime(
+      new Date(endTimestamp / 1000000)
     );
 
     const currentTime = new Date().getTime() * 1000000;
@@ -20,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
       startTimestamp,
       endTimestamp
     );
-    console.log(progressPercentage);
+
     // Create and append a progress bar element
     const progressBar = createProgressBar(progressPercentage);
 
@@ -28,6 +35,19 @@ document.addEventListener("DOMContentLoaded", function () {
     activityItem.appendChild(progressBar);
   });
 });
+
+function formatKoreanTime(date) {
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Seoul",
+  };
+
+  return date.toLocaleDateString("ko-KR", options);
+}
 
 // Calculate progress percentage
 function calculateProgress(currentTime, startTimestamp, endTimestamp) {
