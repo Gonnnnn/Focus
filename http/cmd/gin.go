@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 type ginWrapper struct {
@@ -13,10 +14,10 @@ type ginWrapper struct {
 }
 
 type CreateRequest struct {
-	Title          string `json:"title"`
-	Description    string `json:"description"`
-	StartTimestamp int64  `json:"startTimestamp"`
-	EndTimestamp   int64  `json:"endTimestamp"`
+	Title          string `json:"title" validate:"required"`
+	Description    string `json:"description" validate:"required"`
+	StartTimestamp int64  `json:"startTimestamp" validate:"required,min=1"`
+	EndTimestamp   int64  `json:"endTimestamp" validate:"required,min=1"`
 }
 
 type ListResponse struct {
@@ -26,6 +27,8 @@ type ListResponse struct {
 type CreateResponse struct {
 	Activity *focus.Activity `json:"activity"`
 }
+
+var validate = validator.New()
 
 func (g *ginWrapper) List(c *gin.Context) {
 	activities, err := g.focus.Activities([]string{})
@@ -43,6 +46,13 @@ func (g *ginWrapper) Create(c *gin.Context) {
 		c.String(http.StatusBadRequest, errors.New("invalid request body").Error())
 		return
 	}
+
+	err = validate.Struct(createRequest)
+	if err != nil {
+		c.String(http.StatusBadRequest, errors.New("invalid request body").Error())
+		return
+	}
+
 	activity, err := g.focus.CreateActivity(createRequest.Title, createRequest.Description, createRequest.StartTimestamp, createRequest.EndTimestamp)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
