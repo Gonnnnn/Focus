@@ -34,12 +34,9 @@ func main() {
 	router.GET("/", controller.List)
 	router.POST("/", controller.Create)
 	router.GET("/health", controller.Health)
-	// router.GET("/terminate", terminator.terminate)
 
 	port := 8080
-	log.Printf("Listening on port %d", port)
-	err = router.Run(fmt.Sprintf(":%d", port))
-	if err != nil {
+	if err := router.Run(fmt.Sprintf(":%d", port)); err != nil {
 		log.Fatal(err)
 	}
 }

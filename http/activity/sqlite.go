@@ -1,8 +1,6 @@
 package activity
 
 import (
-	"fmt"
-
 	"gorm.io/gorm"
 )
 
@@ -12,8 +10,6 @@ type sqlite struct {
 }
 
 func NewSQLite(db *gorm.DB) (*sqlite ){
-    fmt.Printf("NewSQLite\n")
-
     return &sqlite{db: db}
 }
 
