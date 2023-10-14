@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function formatKoreanTime(date) {
   const options = {
+    weekday: "short",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
