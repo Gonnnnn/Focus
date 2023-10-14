@@ -32,9 +32,9 @@ document.addEventListener("DOMContentLoaded", function () {
       new Date(endTimestamp / 1000000)
     );
 
-    const currentTime = new Date().getTime() * 1000000;
+    const currentTime = new Date();
     const progressPercentage = calculateProgress(
-      currentTime,
+      currentTime.getTime() * 1000000,
       startTimestamp,
       endTimestamp
     );
@@ -43,7 +43,57 @@ document.addEventListener("DOMContentLoaded", function () {
     const progressBar = createProgressBar(progressPercentage);
 
     // Append the progress bar to the activity item
-    activityItem.appendChild(progressBar);
+    activityItem
+      .querySelector(".activity-item-content")
+      .appendChild(progressBar);
+
+    // Reload the page every minute to update the progress bar.
+    setInterval(function () {
+      location.reload();
+    }, 60000);
+
+    const createActivityForm = document.getElementById("createActivityForm");
+    const startTimeInput = createActivityForm.querySelector("#startTime");
+    const endTimeInput = createActivityForm.querySelector("#endTime");
+
+    // Set the start time to the current time
+    const defaultTimeInput = getCreateFormDateTime(currentTime);
+    startTimeInput.value = defaultTimeInput;
+    endTimeInput.value = defaultTimeInput;
+
+    // Set the create activity form handler.
+    createActivityForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const formData = new FormData(this);
+      const activityName = formData.get("title");
+      const activityDescription = formData.get("description");
+      const startTimeNano =
+        new Date(formData.get("startTime")).getTime() * 1000000;
+      const endTimeNano = new Date(formData.get("endTime")).getTime() * 1000000;
+
+      // Send a POST request to http://localhost:8080
+      fetch("http://localhost:8080", {
+        method: "POST",
+        body: JSON.stringify({
+          title: activityName,
+          description: activityDescription,
+          startTimestamp: startTimeNano,
+          endTimestamp: endTimeNano,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            alert("Activity created successfully!");
+            window.location.reload();
+          } else {
+            alert("Failed to create activity. Please try again.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
   });
 });
 
@@ -91,41 +141,38 @@ function createProgressBar(percentage) {
   return progressBar;
 }
 
-document
-  .getElementById("createActivityForm")
-  .addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const formData = new FormData(this);
-    const activityName = formData.get("title");
-    const activityDescription = formData.get("description");
-    const startTimeNano =
-      new Date(formData.get("startTime")).getTime() * 1000000;
-    const endTimeNano = new Date(formData.get("endTime")).getTime() * 1000000;
-
-    // Send a POST request to http://localhost:8080
-    fetch("http://localhost:8080", {
-      method: "POST",
-      body: JSON.stringify({
-        title: activityName,
-        description: activityDescription,
-        startTimestamp: startTimeNano,
-        endTimestamp: endTimeNano,
-      }),
+function deleteActivity(id) {
+  const url = "http://localhost:8080";
+  const data = { id };
+  fetch(url, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      if (response.ok) {
+        // Successfully deleted, you can update the UI here if needed
+        console.log("Activity deleted successfully");
+        window.location.reload();
+      } else {
+        // Handle error here
+        console.error("Failed to delete activity");
+      }
     })
-      .then((response) => {
-        if (response.ok) {
-          alert("Activity created successfully!");
-          window.location.reload();
-        } else {
-          alert("Failed to create activity. Please try again.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  });
+    .catch((error) => {
+      // Handle network error
+      console.error("Network error:", error);
+    });
+}
 
-setInterval(function () {
-  location.reload();
-}, 60000);
+function getCreateFormDateTime(time) {
+  const year = time.getFullYear();
+  const month = String(time.getMonth() + 1).padStart(2, "0");
+  const day = String(time.getDate()).padStart(2, "0");
+  const hours = String(time.getHours()).padStart(2, "0");
+  const minutes = String(time.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
