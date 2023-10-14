@@ -7,6 +7,27 @@
     .hidden {
       display: none;
     }
+
+    .activity-list {
+      display: flex;
+      flex-wrap: wrap;
+      list-style: none;
+      padding: 0;
+    }
+
+    .activity-item {
+      width: calc(33.33% - 20px); /* Adjust width as needed */
+      margin: 10px; /* Adjust margin as needed */
+      border: 1px solid #ddd;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .description-box {
+      border: 1px solid #ddd;
+      padding: 10px;
+      box-sizing: border-box;
+    }
   </style>
   <body>
     <h1>Create Activity</h1>
@@ -46,7 +67,7 @@
     </form>
 
     <h1>Activity List</h1>
-    <ul>
+    <ul class="activity-list">
       {{ range $index, $activity := .Activities }}
       <li class="activity-item" id="{{ $index }}">
         <div class="activity-id, hidden">
@@ -58,17 +79,19 @@
           <span class="activity-title-value">{{ .Title }}</span>
         </div>
         <div class="activity-description">
-          <span><strong>Description: </strong></span>
-          <span class="activity-description-value">{{ .Description }}</span>
+          <span><strong>Description</strong></span> <br />
+          <div class="description-box">
+            <span class="activity-description-value">{{ .Description }}</span>
+          </div>
         </div>
         <div class="activity-start-timestamp">
-          <span><strong>Start Timestamp: </strong></span>
+          <span><strong>Start Time: </strong></span>
           <span class="activity-start-timestamp-value"
             >{{ .StartTimestamp }}</span
           >
         </div>
         <div class="activity-end-timestamp">
-          <span><strong>End Timestamp: </strong></span>
+          <span><strong>Expected End Time: </strong></span>
           <span class="activity-end-timestamp-value">{{ .EndTimestamp }}</span>
         </div>
       </li>
