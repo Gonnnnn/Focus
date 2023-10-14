@@ -13,6 +13,17 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     const endTimestamp = parseInt(endTimestampElement.textContent.trim());
 
+    const deleteButton = activityItem.querySelector(".delete-button");
+    deleteButton.addEventListener("click", (event) => {
+      const id = event.target.getAttribute("activity-id");
+      const confirmation = confirm(
+        "Are you sure you want to delete this activity?"
+      );
+      if (confirmation) {
+        deleteActivity(id);
+      }
+    });
+
     // Format the start and end timestamps
     startTimestampElement.textContent = formatKoreanTime(
       new Date(startTimestamp / 1000000)

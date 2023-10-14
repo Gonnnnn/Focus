@@ -23,6 +23,19 @@
       box-sizing: border-box;
     }
 
+    .delete-button {
+      top: 5px;
+      right: 5px;
+      background-color: #000; /* Customize button style as needed */
+      color: #fff;
+      border: none;
+      border-radius: 80%;
+      width: 25px;
+      height: 25px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
     .description-box {
       border: 1px solid #ddd;
       padding: 10px;
@@ -94,6 +107,7 @@
           <span><strong>Expected End Time: </strong></span>
           <span class="activity-end-timestamp-value">{{ .EndTimestamp }}</span>
         </div>
+        <button class="delete-button" activity-id="{{ .Id }}">X</button>
       </li>
       <br />
       {{ end }}
