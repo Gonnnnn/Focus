@@ -16,11 +16,17 @@
     }
 
     .activity-item {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 0;
       width: calc(33.33% - 20px); /* Adjust width as needed */
       margin: 10px; /* Adjust margin as needed */
-      border: 1px solid #ddd;
+      border: 1px solid #817e7e;
+      border-radius: 10px;
       padding: 10px;
       box-sizing: border-box;
+      word-break: break-all;
     }
 
     .delete-button {
@@ -38,17 +44,52 @@
 
     .description-box {
       border: 1px solid #ddd;
+      border-radius: 10px;
       padding: 10px;
       box-sizing: border-box;
     }
   </style>
   <body>
+    <h1>Activity List</h1>
+    <ul class="activity-list">
+      {{ range $index, $activity := .Activities }}
+      <li class="activity-item" id="{{ $index }}">
+        <div class="activity-item-content">
+          <div class="activity-title">
+            <span><strong>Title: </strong></span>
+            <span class="activity-title-value">{{ .Title }}</span>
+          </div>
+          <div class="activity-description">
+            <span><strong>Description</strong></span> <br />
+            <div class="description-box">
+              <span class="activity-description-value">{{ .Description }}</span>
+            </div>
+          </div>
+          <div class="activity-start-timestamp">
+            <span><strong>Start Time: </strong></span>
+            <span class="activity-start-timestamp-value"
+              >{{ .StartTimestamp }}</span
+            >
+          </div>
+          <div class="activity-end-timestamp">
+            <span><strong>Expected End Time: </strong></span>
+            <span class="activity-end-timestamp-value"
+              >{{ .EndTimestamp }}</span
+            >
+          </div>
+        </div>
+        <button class="delete-button" activity-id="{{ .Id }}">X</button>
+      </li>
+      <br />
+      {{ end }}
+    </ul>
+
     <h1>Create Activity</h1>
     <form id="createActivityForm">
-      <label for="title">Title:</label>
+      <label for="title">Title</label><br />
       <input type="text" id="title" name="title" required /><br /><br />
 
-      <label for="description">Description:</label>
+      <label for="description">Description</label><br />
       <textarea
         id="description"
         name="description"
@@ -58,7 +99,7 @@
       ></textarea
       ><br /><br />
 
-      <label for="startTime">Start Time:</label>
+      <label for="startTime">Start Time</label><br />
       <input
         type="datetime-local"
         id="startTime"
@@ -67,7 +108,7 @@
         required
       /><br /><br />
 
-      <label for="endTime">End Time:</label>
+      <label for="endTime">End Time:</label><br />
       <input
         type="datetime-local"
         id="endTime"
@@ -78,41 +119,6 @@
 
       <input type="submit" value="Create Activity" />
     </form>
-
-    <h1>Activity List</h1>
-    <ul class="activity-list">
-      {{ range $index, $activity := .Activities }}
-      <li class="activity-item" id="{{ $index }}">
-        <div class="activity-id, hidden">
-          <span><strong>ID: </strong></span>
-          <span class="activity-id-value">{{ .Id }}</span>
-        </div>
-        <div class="activity-title">
-          <span><strong>Title: </strong></span>
-          <span class="activity-title-value">{{ .Title }}</span>
-        </div>
-        <div class="activity-description">
-          <span><strong>Description</strong></span> <br />
-          <div class="description-box">
-            <span class="activity-description-value">{{ .Description }}</span>
-          </div>
-        </div>
-        <div class="activity-start-timestamp">
-          <span><strong>Start Time: </strong></span>
-          <span class="activity-start-timestamp-value"
-            >{{ .StartTimestamp }}</span
-          >
-        </div>
-        <div class="activity-end-timestamp">
-          <span><strong>Expected End Time: </strong></span>
-          <span class="activity-end-timestamp-value">{{ .EndTimestamp }}</span>
-        </div>
-        <button class="delete-button" activity-id="{{ .Id }}">X</button>
-      </li>
-      <br />
-      {{ end }}
-    </ul>
-
-    <script src="/main.js"></script>
   </body>
+  <script src="/main.js"></script>
 </html>
