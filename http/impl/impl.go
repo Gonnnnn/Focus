@@ -29,7 +29,11 @@ func (i *impl) CreateActivity(title string, description string, startTimestamp i
 }
 
 func (i *impl) Activity(id string) (*focus.Activity, error) {
-	return &focus.Activity{}, errors.New("not implemented")
+	activity, err := i.activityRepository.Activity(id)
+	if err != nil {
+		return nil, err
+	}
+	return convertToFocusActivity(activity), nil
 }
 
 func (i *impl) Activities(ids []string) ([]*focus.Activity, error) {
