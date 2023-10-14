@@ -17,11 +17,11 @@ type Activity struct {
 	// The unique identifier for the activity. E.g. 1
 	Id uint `gorm:"primaryKey;autoIncrement"`
 	// The title of the activity. E.g. "My Activity"
-	Title string
+	Title string `gorm:"column:title;not null"`
 	// The description of the activity. E.g. "This is my activity. The reason why I started this is ..."
-	Description string
+	Description string `gorm:"column:description;not null"`
 	// The start timestamp of the activity. E.g. 1234567890
-	StartTimestamp int64
+	StartTimestamp int64 `gorm:"column:start_timestamp;not null"`
 	// The end timestamp of the activity. E.g. 1234567890
-	EndTimestamp int64
+	EndTimestamp int64 `gorm:"column:end_timestamp;not null"`
 }
