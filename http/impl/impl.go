@@ -54,6 +54,34 @@ func (i *impl) DeleteActivity(id string) error {
 	return i.activityRepository.DeleteActivity(id)
 }
 
+func (i *impl) CompleteActivity(id string) (*focus.Activity, error) {
+	activity, err := i.activityRepository.Activity(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if activity.Complete {
+		return convertToFocusActivity(activity), nil
+	}
+
+	now := i.clock.Now().Unix()
+
+	if activity.StartTimestamp > now {
+		return nil, errors.New("expected start time is not yet passed")
+	}
+
+	if activity.EndTimestamp < now {
+		return nil, errors.New("expected end time is already passed")
+	}
+
+	_, err = i.activityRepository.CompleteActivity(activity)
+	if err != nil {
+		return nil, err
+	}
+
+	return  convertToFocusActivity(activity), nil
+}
+
 func convertToFocusActivity(activity *activity.Activity) *focus.Activity {
 	return &focus.Activity{
 		Id:            	fmt.Sprintf("%d", activity.Id),

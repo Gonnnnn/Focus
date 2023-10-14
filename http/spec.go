@@ -24,4 +24,6 @@ type Activity struct {
 	StartTimestamp int64
 	// The end timestamp of the activity. E.g. 1234567890
 	EndTimestamp int64
+	// The indicator whether the activity is done or not. E.g. true
+	Complete bool
 }

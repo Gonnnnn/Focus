@@ -11,6 +11,8 @@ type Repository interface {
 	UpdateActivity(activity *Activity) (*Activity, error)
 	// Deletes the activity with the given id.
 	DeleteActivity(id string) error
+	// Updates the done status of the activity with the given id.
+	CompleteActivity(activity *Activity) (*Activity, error)
 }
 
 type Activity struct {
@@ -26,4 +28,6 @@ type Activity struct {
 	EndTimestamp int64 `gorm:"column:end_timestamp;not null"`
 	// The timestamp when the activity was created. E.g. 1234567890
 	CreatedAt int64 `gorm:"column:created_at;not null"`
+	// The indicator whether the activity is done or not. E.g. true
+	Complete bool `gorm:"column:done;not null"`
 }

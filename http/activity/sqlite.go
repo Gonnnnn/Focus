@@ -70,3 +70,12 @@ func (repo *sqlite) DeleteActivity(id string) error {
 
     return nil
 }
+
+func (repo *sqlite) CompleteActivity(activity *Activity) (*Activity, error) {
+    activity.Complete = true
+    if err := repo.db.Save(activity).Error; err != nil {
+        return nil, err
+    }
+
+    return activity, nil
+}
