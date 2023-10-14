@@ -24,10 +24,6 @@ func main() {
         return
     }
 
-	if err := db.AutoMigrate(&activity.Activity{}); err != nil {
-		log.Fatal(err)
-	}
-
 	activityRepository := activity.NewSQLite(db)
 	if err != nil {
 		log.Fatal(err)
