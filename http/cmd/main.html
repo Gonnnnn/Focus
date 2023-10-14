@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Activity List</title>
+    <title>Focus</title>
   </head>
   <style>
     .hidden {
@@ -48,19 +48,26 @@
       padding: 10px;
       box-sizing: border-box;
     }
+
+    #createActivityForm {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+    }
   </style>
   <body>
-    <h1>Activity List</h1>
+    <h1>You need to FOCUS on</h1>
     <ul class="activity-list">
       {{ range $index, $activity := .Activities }}
       <li class="activity-item" id="{{ $index }}">
         <div class="activity-item-content">
           <div class="activity-title">
-            <span><strong>Title: </strong></span>
+            <span><strong>Goal: </strong></span>
             <span class="activity-title-value">{{ .Title }}</span>
           </div>
           <div class="activity-description">
-            <span><strong>Description</strong></span> <br />
+            <span><strong>Reason why you are doing it is ... </strong></span>
+            <br />
             <div class="description-box">
               <span class="activity-description-value">{{ .Description }}</span>
             </div>
@@ -84,40 +91,49 @@
       {{ end }}
     </ul>
 
-    <h1>Create Activity</h1>
+    <h1>Add More</h1>
     <form id="createActivityForm">
-      <label for="title">Title</label><br />
-      <input type="text" id="title" name="title" required /><br /><br />
+      <div class="box">
+        <h2><label for="title">Goal</label></h2>
+        <textarea
+          type="text"
+          id="title"
+          name="title"
+          rows="2"
+          cols="50"
+          required
+        ></textarea
+        ><br /><br />
+        <h2><label for="description">Why are you doing it?</label></h2>
+        <textarea
+          id="description"
+          name="description"
+          rows="4"
+          cols="50"
+          required
+        ></textarea>
+      </div>
+      <div class="box">
+        <h2><label for="startTime">Start Time</label></h2>
+        <input
+          type="datetime-local"
+          id="startTime"
+          name="startTime"
+          value=""
+          required
+        /><br /><br />
 
-      <label for="description">Description</label><br />
-      <textarea
-        id="description"
-        name="description"
-        rows="4"
-        cols="50"
-        required
-      ></textarea
-      ><br /><br />
+        <h2><label for="endTime">End Time:</label></h2>
+        <input
+          type="datetime-local"
+          id="endTime"
+          name="endTime"
+          value=""
+          required
+        /><br /><br />
 
-      <label for="startTime">Start Time</label><br />
-      <input
-        type="datetime-local"
-        id="startTime"
-        name="startTime"
-        value=""
-        required
-      /><br /><br />
-
-      <label for="endTime">End Time:</label><br />
-      <input
-        type="datetime-local"
-        id="endTime"
-        name="endTime"
-        value=""
-        required
-      /><br /><br />
-
-      <input type="submit" value="Create Activity" />
+        <input type="submit" value="Add a goal" />
+      </div>
     </form>
   </body>
   <script src="/main.js"></script>
