@@ -5,15 +5,11 @@ import (
 	"focus/activity"
 	"focus/impl"
 	"log"
-	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/lotusdblabs/lotusdb/v2"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
-
-type terminator struct {
-	sigChan chan os.Signal
-}
 
 func main() {
 	gin.SetMode(gin.DebugMode)
@@ -22,28 +18,17 @@ func main() {
 	router.LoadHTMLGlob("cmd/*.html")
 	router.StaticFile("/main.js", "cmd/main.js")
 
-	options := lotusdb.DefaultOptions
-	options.DirPath = "/tmp/lotusdb_basic"
-	db, err := lotusdb.Open(options)
-	if err != nil {
+	db, err := gorm.Open(sqlite.Open("activity/data/db.db"), &gorm.Config{})
+    if err != nil {
+        fmt.Println("Failed to connect to the database:", err)
+        return
+    }
+
+	if err := db.AutoMigrate(&activity.Activity{}); err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
 
-	sigChan := make(chan os.Signal)
-	go func(db *lotusdb.DB) {
-		sig := <-sigChan
-		if sig == os.Interrupt || sig == os.Kill {
-			err := db.Close()
-			if err != nil {
-				log.Fatal(err)
-			}
-			os.Exit(0)
-		}
-	}(db)
-
-	terminator := &terminator{sigChan: sigChan}
-	activityRepository, err := activity.NewLotus(db)
+	activityRepository := activity.NewSQLite(db)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,7 +38,7 @@ func main() {
 	router.GET("/", controller.List)
 	router.POST("/", controller.Create)
 	router.GET("/health", controller.Health)
-	router.GET("/terminate", terminator.terminate)
+	// router.GET("/terminate", terminator.terminate)
 
 	port := 8080
 	log.Printf("Listening on port %d", port)
@@ -61,8 +46,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func (t *terminator) terminate(c *gin.Context) {
-	t.sigChan <- os.Interrupt
 }

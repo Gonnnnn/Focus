@@ -19,9 +19,7 @@ func New(activityRepository activity.Repository) focus.Focus {
 }
 
 func (i *impl) CreateActivity(title string, description string, startTimestamp int64, endTimestamp int64) (*focus.Activity, error) {
-	now := i.clock.Now()
-	id := fmt.Sprintf("%d_%d_%d", now.UnixNano(), startTimestamp, endTimestamp)
-	activity, err := i.activityRepository.CreateActivity(id, title, description, startTimestamp, endTimestamp)
+	activity, err := i.activityRepository.CreateActivity(title, description, startTimestamp, endTimestamp)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +56,7 @@ func (i *impl) DeleteActivity(id string) error {
 
 func convertToFocusActivity(activity *activity.Activity) *focus.Activity {
 	return &focus.Activity{
-		Id:             activity.Id,
+		Id:            	fmt.Sprintf("%d", activity.Id),
 		Title:          activity.Title,
 		Description:    activity.Description,
 		StartTimestamp: activity.StartTimestamp,
