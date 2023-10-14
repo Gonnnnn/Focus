@@ -1,24 +1,27 @@
 package activity
 
 import (
+	"github.com/benbjohnson/clock"
 	"gorm.io/gorm"
 )
 
 // Define the SQLite implementation of the Repository interface.
 type sqlite struct {
     db *gorm.DB
+    clock clock.Clock
 }
 
-func NewSQLite(db *gorm.DB) (*sqlite ){
-    return &sqlite{db: db}
+func NewSQLite(db *gorm.DB, clock clock.Clock) Repository {
+    return &sqlite{db: db, clock: clock}
 }
 
-func (repo *sqlite) CreateActivity( title string, description string, startTimestamp int64, endTimestamp int64) (*Activity, error) {
+func (repo *sqlite) CreateActivity(title string, description string, startTimestamp int64, endTimestamp int64) (*Activity, error) {
     activity := &Activity{
         Title:          title,
         Description:    description,
         StartTimestamp: startTimestamp,
         EndTimestamp:   endTimestamp,
+        CreatedAt:      repo.clock.Now().Unix(),
     }
 
     if err := repo.db.Create(activity).Error; err != nil {

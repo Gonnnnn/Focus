@@ -14,8 +14,8 @@ type impl struct {
 	clock              clock.Clock
 }
 
-func New(activityRepository activity.Repository) focus.Focus {
-	return &impl{activityRepository: activityRepository, clock: clock.New()}
+func New(activityRepository activity.Repository, clock clock.Clock) focus.Focus {
+	return &impl{activityRepository: activityRepository, clock: clock}
 }
 
 func (i *impl) CreateActivity(title string, description string, startTimestamp int64, endTimestamp int64) (*focus.Activity, error) {

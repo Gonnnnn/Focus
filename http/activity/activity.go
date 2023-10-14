@@ -24,4 +24,6 @@ type Activity struct {
 	StartTimestamp int64 `gorm:"column:start_timestamp;not null"`
 	// The end timestamp of the activity. E.g. 1234567890
 	EndTimestamp int64 `gorm:"column:end_timestamp;not null"`
+	// The timestamp when the activity was created. E.g. 1234567890
+	CreatedAt int64 `gorm:"column:created_at;not null"`
 }

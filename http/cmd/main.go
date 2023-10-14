@@ -6,6 +6,7 @@ import (
 	"focus/impl"
 	"log"
 
+	"github.com/benbjohnson/clock"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -24,11 +25,12 @@ func main() {
         return
     }
 
-	activityRepository := activity.NewSQLite(db)
+	clock := clock.New()
+	activityRepository := activity.NewSQLite(db, clock)
 	if err != nil {
 		log.Fatal(err)
 	}
-	focus := impl.New(activityRepository)
+	focus := impl.New(activityRepository, clock)
 	controller := &ginWrapper{focus: focus}
 
 	router.GET("/", controller.List)
