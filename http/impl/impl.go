@@ -51,7 +51,7 @@ func (i *impl) UpdateActivity(activity *focus.Activity) (*focus.Activity, error)
 }
 
 func (i *impl) DeleteActivity(id string) error {
-	return errors.New("not implemented")
+	return i.activityRepository.DeleteActivity(id)
 }
 
 func convertToFocusActivity(activity *activity.Activity) *focus.Activity {

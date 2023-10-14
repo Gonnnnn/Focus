@@ -20,6 +20,10 @@ type CreateRequest struct {
 	EndTimestamp   int64  `json:"endTimestamp" validate:"required,min=1"`
 }
 
+type DeleteRequest struct {
+	Id string `json:"id" validate:"required"`
+}
+
 type ListResponse struct {
 	Activities []*focus.Activity `json:"activities"`
 }
@@ -60,6 +64,26 @@ func (g *ginWrapper) Create(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, activity)
+}
+
+func (g *ginWrapper) Delete(c *gin.Context) {
+	var deleteRequest DeleteRequest
+	if err := c.BindJSON(&deleteRequest); err != nil {
+		c.String(http.StatusBadRequest, errors.New("invalid request body").Error())
+		return
+	}
+
+	if err := validate.Struct(deleteRequest); err != nil {
+		c.String(http.StatusBadRequest, errors.New("invalid request body").Error())
+		return
+	}
+
+	if err := g.focus.DeleteActivity(deleteRequest.Id); err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	
+	c.Status(http.StatusOK)
 }
 
 func (g *ginWrapper) Health(c *gin.Context) {
