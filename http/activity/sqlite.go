@@ -22,6 +22,7 @@ func (repo *sqlite) CreateActivity(title string, description string, startTimest
         StartTimestamp: startTimestamp,
         EndTimestamp:   endTimestamp,
         CreatedAt:      repo.clock.Now().Unix(),
+        Complete:       false,
     }
 
     if err := repo.db.Create(activity).Error; err != nil {
