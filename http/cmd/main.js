@@ -52,17 +52,20 @@ document.addEventListener("DOMContentLoaded", function () {
       endTimestamp
     );
 
-    // Create and append a progress bar element
-    const progressBar = createProgressBar(progressPercentage);
-
-    // Append the progress bar to the activity item
+    const progressBar = document.createElement("div");
+    progressBar.className = "activity-progress-bar";
+    progressBar.textContent = progressText(progressPercentage);
     activityItem
       .querySelector(".activity-item-content")
       .appendChild(progressBar);
-
-    // Reload the page every minute to update the progress bar.
     setInterval(function () {
-      location.reload();
+      const progressPercentage = calculateProgress(
+        new Date().getTime() * 1000000,
+        startTimestamp,
+        endTimestamp
+      );
+
+      progressBar.textContent = progressText(progressPercentage);
     }, 60000);
   });
 
@@ -137,21 +140,12 @@ function calculateProgress(currentTime, startTimestamp, endTimestamp) {
   }
 }
 
-// Create a progress bar element
-function createProgressBar(percentage) {
-  const progressBar = document.createElement("div");
-  progressBar.className = "activity-progress-bar";
-
-  // Create a string with □ and ■ characters based on the percentage
+function progressText(percentage) {
   const barString =
     "■".repeat(Math.floor(percentage / 10)) +
     "□".repeat(Math.floor((100 - percentage) / 10));
 
-  progressBar.innerHTML = `<div class="activity-progress-text">${barString} ${percentage.toFixed(
-    2
-  )}%</div>`;
-
-  return progressBar;
+  return `${barString} ${percentage.toFixed(2)}%`;
 }
 
 function deleteActivity(id) {
