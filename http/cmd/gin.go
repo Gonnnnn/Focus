@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"focus"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,6 +43,7 @@ func (g *ginWrapper) List(c *gin.Context) {
 	ids := c.QueryArray("ids")
 	activities, err := g.focus.Activities(ids)
 	if err != nil {
+		log.Printf("failed to get activities: %+v", err)
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -64,6 +66,7 @@ func (g *ginWrapper) Create(c *gin.Context) {
 
 	activity, err := g.focus.CreateActivity(createRequest.Title, createRequest.Description, createRequest.StartTimestamp, createRequest.EndTimestamp)
 	if err != nil {
+		log.Printf("failed to create activity: %+v", err)
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -83,6 +86,7 @@ func (g *ginWrapper) Delete(c *gin.Context) {
 	}
 
 	if err := g.focus.DeleteActivity(deleteRequest.Id); err != nil {
+		log.Printf("failed to delete activity: %+v", err)
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
