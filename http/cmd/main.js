@@ -169,7 +169,7 @@ async function deleteActivity(id) {
 
 async function completeActivity(id) {
   const data = { id };
-  fetch(BASE_URL + "/complete", {
+  return await fetch(BASE_URL + "/complete", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
