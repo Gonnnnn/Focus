@@ -11,6 +11,8 @@ type Focus interface {
 	UpdateActivity(activity *Activity) (*Activity, error)
 	// Deletes the activity with the given id.
 	DeleteActivity(id string) error
+	// Updates the complete status of the activity with the given id. It returns the updated activity.
+	CompleteActivity(id string) (*Activity, error)
 }
 
 type Activity struct {

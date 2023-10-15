@@ -24,6 +24,10 @@ type DeleteRequest struct {
 	Id string `json:"id" validate:"required"`
 }
 
+type CompleteRequest struct {
+	Id string `json:"id" validate:"required"`
+}
+
 type ListResponse struct {
 	Activities []*focus.Activity `json:"activities"`
 }
@@ -84,6 +88,27 @@ func (g *ginWrapper) Delete(c *gin.Context) {
 	}
 	
 	c.Status(http.StatusOK)
+}
+
+func (g *ginWrapper) Complete(c *gin.Context) {
+	var completeRequest CompleteRequest
+	if err := c.BindJSON(&completeRequest); err != nil {
+		c.String(http.StatusBadRequest, errors.New("invalid request body").Error())
+		return
+	}
+
+	if err := validate.Struct(completeRequest); err != nil {
+		c.String(http.StatusBadRequest, errors.New("invalid request body").Error())
+		return
+	}
+
+	activity, err := g.focus.CompleteActivity(completeRequest.Id)
+	if err != nil {
+		log.Printf("failed to complete activity: %+v", err)
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, activity)
 }
 
 func (g *ginWrapper) Health(c *gin.Context) {

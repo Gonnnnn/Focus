@@ -36,6 +36,7 @@ func main() {
 	router.GET("/", controller.List)
 	router.POST("/", controller.Create)
 	router.DELETE("/", controller.Delete)
+	router.POST("/complete", controller.Complete)
 	router.GET("/health", controller.Health)
 
 	port := 8080

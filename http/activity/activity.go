@@ -29,5 +29,5 @@ type Activity struct {
 	// The timestamp when the activity was created. E.g. 1234567890
 	CreatedAt int64 `gorm:"column:created_at;not null"`
 	// The indicator whether the activity is done or not. E.g. true
-	Complete bool `gorm:"column:done;not null"`
+	Complete bool `gorm:"column:complete;not null"`
 }
