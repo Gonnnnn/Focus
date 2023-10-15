@@ -78,7 +78,7 @@
     <h1>You need to FOCUS on</h1>
     <ul class="activity-list">
       {{ if .Activities }} {{ range $index, $activity := .Activities }}
-      <li class="activity-item" id="{{ $index }}">
+      <li class="activity-item" activity-id="{{ .Id }}" index="{{ $index }}">
         <div class="activity-item-content">
           <div class="activity-title">
             <span><strong>Goal: </strong></span>

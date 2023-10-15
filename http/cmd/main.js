@@ -1,9 +1,68 @@
+const COMPLETE = "COMPLETE";
+const IN_PROGRESS = "IN_PROGRESS";
+const NOT_STARTED = "NOT_STARTED";
+const EXPIRED = "EXPIRED";
+const BASE_URL = "http://localhost:8080";
+
+class Activity {
+  constructor(
+    id,
+    title,
+    description,
+    startTimestamp,
+    endTimestamp,
+    createdAt,
+    status
+  ) {
+    this.id = id;
+    this.title = title;
+    this.description = description;
+    this.startTimestamp = startTimestamp;
+    this.endTimestamp = endTimestamp;
+    this.createdAt = createdAt;
+    this.status = status;
+  }
+
+  static fromJson(json) {
+    return new Activity(
+      json.id,
+      json.title,
+      json.description,
+      json.startTimestamp,
+      json.endTimestamp,
+      json.createdAt,
+      json.status
+    );
+  }
+
+  delete() {
+    const snapshot = { ...this };
+    console.log(snapshot);
+    const event = new CustomEvent("activityDeleted", { detail: { snapshot } });
+    document.dispatchEvent(event);
+  }
+}
+
+const activities = {};
+const activityItemDict = {};
+
 document.addEventListener("DOMContentLoaded", function () {
   // Get all activity list items
   const activityItems = document.querySelectorAll(".activity-item");
   const currentTime = new Date();
 
   activityItems.forEach(function (activityItem) {
+    const id = activityItem.getAttribute("activity-id");
+    activityItemDict[id] = activityItem;
+
+    const titleElement = activityItem.querySelector(".activity-title-value");
+    const title = titleElement.textContent.trim();
+
+    const descriptionElement = activityItem.querySelector(
+      ".activity-description-value"
+    );
+    const description = descriptionElement.textContent.trim();
+
     const startTimestampElement = activityItem.querySelector(
       ".activity-start-timestamp-value"
     );
@@ -14,14 +73,24 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     const endTimestamp = parseInt(endTimestampElement.textContent.trim());
 
+    const activity = new Activity(
+      id,
+      title,
+      description,
+      startTimestamp,
+      endTimestamp,
+      0,
+      ""
+    );
+    activities[id] = activity;
+
     const deleteButton = activityItem.querySelector(".delete-button");
     deleteButton.addEventListener("click", (event) => {
-      const id = event.target.getAttribute("activity-id");
       const confirmation = confirm(
         "Are you sure you want to delete this activity?"
       );
       if (confirmation) {
-        deleteActivity(id);
+        activity.delete();
       }
     });
 
@@ -111,6 +180,23 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error:", error);
       });
   });
+
+  document.addEventListener("activityDeleted", async (event) => {
+    const deletedActivity = event.detail.snapshot;
+    const response = await deleteActivity(deletedActivity.id);
+    if (!response.ok) {
+      const reason = await response.text();
+      console.error(`Failed to delete activity. Reason: ${reason}`);
+      alert(`Failed to delete activity: ${reason}.`);
+      return;
+    }
+
+    const activityItem = activityItemDict[deletedActivity.id];
+    if (activityItem) {
+      activityItem.remove();
+    }
+    console.log("Activity completed successfully.");
+  });
 });
 
 function formatKoreanTime(date) {
@@ -148,10 +234,9 @@ function progressText(percentage) {
   return `${barString} ${percentage.toFixed(2)}%`;
 }
 
-function deleteActivity(id) {
-  const url = "http://localhost:8080";
+async function deleteActivity(id) {
   const data = { id };
-  fetch(url, {
+  return await fetch(BASE_URL, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -159,14 +244,7 @@ function deleteActivity(id) {
     body: JSON.stringify(data),
   })
     .then((response) => {
-      if (response.ok) {
-        // Successfully deleted, you can update the UI here if needed
-        console.log("Activity deleted successfully");
-        window.location.reload();
-      } else {
-        // Handle error here
-        console.error("Failed to delete activity");
-      }
+      return response;
     })
     .catch((error) => {
       // Handle network error
@@ -175,9 +253,8 @@ function deleteActivity(id) {
 }
 
 function completeActivity(id) {
-  const url = "http://localhost:8080/complete";
   const data = { id };
-  fetch(url, {
+  fetch(BASE_URL + "/complete", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
