@@ -15,13 +15,13 @@ func NewSQLite(db *gorm.DB, clock clock.Clock) Repository {
     return &sqlite{db: db, clock: clock}
 }
 
-func (repo *sqlite) CreateActivity(title string, description string, startTimestamp int64, endTimestamp int64) (*Activity, error) {
+func (repo *sqlite) CreateActivity(title string, description string, startTimestampMilli int64, endTimestampMilli int64) (*Activity, error) {
     activity := &Activity{
         Title:          title,
         Description:    description,
-        StartTimestamp: startTimestamp,
-        EndTimestamp:   endTimestamp,
-        CreatedAt:      repo.clock.Now().Unix(),
+        StartTimestampMilli: startTimestampMilli,
+        EndTimestampMilli:   endTimestampMilli,
+        CreatedAt:      repo.clock.Now().UnixMilli(),
         Complete:       false,
     }
 

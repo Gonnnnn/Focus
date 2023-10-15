@@ -7,28 +7,30 @@ import (
 )
 
 
-func ConvertToFocusActivity(activity *activity.Activity, now int64) *focus.Activity {
+func ConvertToFocusActivity(activity *activity.Activity, nowMilli int64) *focus.Activity {
 	return &focus.Activity{
 		Id:            	fmt.Sprintf("%d", activity.Id),
 		Title:          activity.Title,
 		Description:    activity.Description,
-		StartTimestamp: activity.StartTimestamp,
-		EndTimestamp:   activity.EndTimestamp,
+		StartTimestampMilli: activity.StartTimestampMilli,
+		EndTimestampMilli:   activity.EndTimestampMilli,
 		CreatedAt:      activity.CreatedAt,
-		Status:         activityStatus(activity, now),
+		Status:         activityStatus(activity, nowMilli),
 	}
 }
 
-func activityStatus(activity *activity.Activity, now int64) focus.Status {
+func activityStatus(activity *activity.Activity, nowMilli int64) focus.Status {
 	if activity.Complete {
 		return focus.Complete
 	}
 
-	if activity.StartTimestamp > now {
+	fmt.Printf("activity.StartTimestampMilli: %d\n", activity.StartTimestampMilli)
+	fmt.Printf("nowMilli: %d\n", nowMilli)
+	if activity.StartTimestampMilli > nowMilli {
 		return focus.NotStarted
 	}
 
-	if activity.EndTimestamp < now {
+	if activity.EndTimestampMilli < nowMilli {
 		return focus.Expired
 	}
 

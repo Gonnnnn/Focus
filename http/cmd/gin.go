@@ -17,8 +17,8 @@ type ginWrapper struct {
 type CreateRequest struct {
 	Title          string `json:"title" validate:"required"`
 	Description    string `json:"description" validate:"required"`
-	StartTimestamp int64  `json:"startTimestamp" validate:"required,min=1"`
-	EndTimestamp   int64  `json:"endTimestamp" validate:"required,min=1"`
+	StartTimestampMilli int64  `json:"startTimestampMilli" validate:"required,min=1"`
+	EndTimestampMilli   int64  `json:"endTimestampMilli" validate:"required,min=1"`
 }
 
 type DeleteRequest struct {
@@ -64,7 +64,7 @@ func (g *ginWrapper) Create(c *gin.Context) {
 		return
 	}
 
-	activity, err := g.focus.CreateActivity(createRequest.Title, createRequest.Description, createRequest.StartTimestamp, createRequest.EndTimestamp)
+	activity, err := g.focus.CreateActivity(createRequest.Title, createRequest.Description, createRequest.StartTimestampMilli, createRequest.EndTimestampMilli)
 	if err != nil {
 		log.Printf("failed to create activity: %+v", err)
 		c.String(http.StatusInternalServerError, err.Error())

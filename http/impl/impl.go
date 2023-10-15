@@ -17,12 +17,12 @@ func New(activityRepository activity.Repository, clock clock.Clock) focus.Focus 
 	return &impl{activityRepository: activityRepository, clock: clock}
 }
 
-func (i *impl) CreateActivity(title string, description string, startTimestamp int64, endTimestamp int64) (*focus.Activity, error) {
-	activity, err := i.activityRepository.CreateActivity(title, description, startTimestamp, endTimestamp)
+func (i *impl) CreateActivity(title string, description string, startTimestampMilli int64, endTimestampMilli int64) (*focus.Activity, error) {
+	activity, err := i.activityRepository.CreateActivity(title, description, startTimestampMilli, endTimestampMilli)
 	if err != nil {
 		return nil, err
 	}
-	return ConvertToFocusActivity(activity, i.clock.Now().Unix()), nil
+	return ConvertToFocusActivity(activity, i.clock.Now().UnixMilli()), nil
 }
 
 func (i *impl) Activity(id string) (*focus.Activity, error) {
@@ -30,7 +30,7 @@ func (i *impl) Activity(id string) (*focus.Activity, error) {
 	if err != nil {
 		return nil, err
 	}
-	return ConvertToFocusActivity(activity, i.clock.Now().Unix()), nil
+	return ConvertToFocusActivity(activity, i.clock.Now().UnixMilli()), nil
 }
 
 func (i *impl) Activities(ids []string) ([]*focus.Activity, error) {
@@ -40,7 +40,7 @@ func (i *impl) Activities(ids []string) ([]*focus.Activity, error) {
 	}
 	focusActivities := make([]*focus.Activity, 0, len(activities))
 	for _, activity := range activities {
-		focusActivities = append(focusActivities, ConvertToFocusActivity(activity, i.clock.Now().Unix()))
+		focusActivities = append(focusActivities, ConvertToFocusActivity(activity, i.clock.Now().UnixMilli()))
 	}
 	return focusActivities, nil
 }
@@ -59,17 +59,17 @@ func (i *impl) CompleteActivity(id string) (*focus.Activity, error) {
 		return nil, err
 	}
 
-	now := i.clock.Now().Unix()
+	now := i.clock.Now().UnixMilli()
 
 	if activity.Complete {
 		return ConvertToFocusActivity(activity, now), nil
 	}
 
-	if activity.StartTimestamp > now {
+	if activity.StartTimestampMilli > now {
 		return nil, errors.New("expected start time is not yet passed")
 	}
 
-	if activity.EndTimestamp < now {
+	if activity.EndTimestampMilli < now {
 		return nil, errors.New("expected end time is already passed")
 	}
 

@@ -10,23 +10,25 @@ function initActivityItem(activityItem) {
   const startTimestampElement = activityItem.querySelector(
     ".activity-start-timestamp-value"
   );
-  const startTimestamp = parseInt(startTimestampElement.textContent.trim());
+  const startTimestampMilli = parseInt(
+    startTimestampElement.textContent.trim()
+  );
   const endTimestampElement = activityItem.querySelector(
     ".activity-end-timestamp-value"
   );
-  const endTimestamp = parseInt(endTimestampElement.textContent.trim());
+  const endTimestampMilli = parseInt(endTimestampElement.textContent.trim());
   startTimestampElement.textContent = formatKoreanTime(
-    new Date(startTimestamp / 1000000)
+    new Date(startTimestampMilli)
   );
   endTimestampElement.textContent = formatKoreanTime(
-    new Date(endTimestamp / 1000000)
+    new Date(endTimestampMilli)
   );
 
   // Initialize progress bar.
   const progressPercentage = calculateProgress(
-    currentTime.getTime() * 1000000,
-    startTimestamp,
-    endTimestamp
+    currentTime.getTime(),
+    startTimestampMilli,
+    endTimestampMilli
   );
   const progressBar = document.createElement("div");
   progressBar.className = "activity-progress-bar";
@@ -34,9 +36,9 @@ function initActivityItem(activityItem) {
   activityItem.querySelector(".activity-item-content").appendChild(progressBar);
   setInterval(function () {
     const progressPercentage = calculateProgress(
-      new Date().getTime() * 1000000,
-      startTimestamp,
-      endTimestamp
+      new Date().getTime(),
+      startTimestampMilli,
+      endTimestampMilli
     );
 
     progressBar.textContent = progressText(progressPercentage);
@@ -107,10 +109,10 @@ async function createFormClickHandler(event) {
   const formData = new FormData(this);
   const activityName = formData.get("title");
   const activityDescription = formData.get("description");
-  const startTimeNano = new Date(formData.get("startTime")).getTime() * 1000000;
-  const endTimeNano = new Date(formData.get("endTime")).getTime() * 1000000;
+  const startTimeMilli = new Date(formData.get("startTime")).getTime();
+  const endTimeMilli = new Date(formData.get("endTime")).getTime();
 
-  if (startTimeNano >= endTimeNano) {
+  if (startTimeMilli >= endTimeMilli) {
     alert("Start time must be before end time.");
     return;
   }
@@ -118,8 +120,8 @@ async function createFormClickHandler(event) {
   const response = await createActivity({
     title: activityName,
     description: activityDescription,
-    startTimestamp: startTimeNano,
-    endTimestamp: endTimeNano,
+    startTimestampMilli: startTimeMilli,
+    endTimestampMilli: endTimeMilli,
   });
 
   if (!response.ok) {
@@ -196,14 +198,20 @@ function formatKoreanTime(date) {
   return date.toLocaleDateString("ko-KR", options);
 }
 
-function calculateProgress(currentTime, startTimestamp, endTimestamp) {
-  if (currentTime < startTimestamp) {
+function calculateProgress(
+  currentTime,
+  startTimestampMilli,
+  endTimestampMilli
+) {
+  if (currentTime < startTimestampMilli) {
     return 0;
-  } else if (currentTime >= endTimestamp) {
+  } else if (currentTime >= endTimestampMilli) {
     return 100;
   } else {
     return (
-      ((currentTime - startTimestamp) / (endTimestamp - startTimestamp)) * 100
+      ((currentTime - startTimestampMilli) /
+        (endTimestampMilli - startTimestampMilli)) *
+      100
     );
   }
 }
