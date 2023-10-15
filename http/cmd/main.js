@@ -24,6 +24,13 @@ function initActivityItem(activityItem) {
     new Date(endTimestampMilli)
   );
 
+  // Initialize status.
+  const statusValueElement = activityItem.querySelector(
+    ".activity-status-value"
+  );
+  const status = statusValueElement.textContent.trim();
+  statusValueElement.style.color = statusColor(status);
+
   // Initialize progress bar.
   const progressPercentage = calculateProgress(
     currentTime.getTime(),
@@ -34,15 +41,22 @@ function initActivityItem(activityItem) {
   progressBar.className = "activity-progress-bar";
   progressBar.textContent = progressText(progressPercentage);
   activityItem.querySelector(".activity-item-content").appendChild(progressBar);
-  setInterval(function () {
-    const progressPercentage = calculateProgress(
-      new Date().getTime(),
-      startTimestampMilli,
-      endTimestampMilli
-    );
+  if (status === IN_PROGRESS) {
+    setInterval(function () {
+      const progressPercentage = calculateProgress(
+        new Date().getTime(),
+        startTimestampMilli,
+        endTimestampMilli
+      );
 
-    progressBar.textContent = progressText(progressPercentage);
-  }, 60000);
+      progressBar.textContent = progressText(progressPercentage);
+      if (progressPercentage >= 100) {
+        // Reload page when activity is completed. It can cause a slight problem when
+        // there are multiple activities in the same page, but it's not a big deal.
+        location.reload();
+      }
+    }, 60000);
+  }
 
   // Attach event listeners to buttons.
   const id = activityItem.getAttribute("activity-id");
@@ -232,6 +246,21 @@ function getCreateFormDateTime(time) {
   const minutes = String(time.getMinutes()).padStart(2, "0");
 
   return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function statusColor(status) {
+  switch (status) {
+    case COMPLETE:
+      return "#3CDE27"; // green
+    case IN_PROGRESS:
+      return "#1EB4D5"; // sky blue
+    case NOT_STARTED:
+      return "black";
+    case EXPIRED:
+      return "gray";
+    default:
+      return "black";
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
