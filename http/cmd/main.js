@@ -24,6 +24,19 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
+    const completeButton = activityItem.querySelector(".complete-button");
+    if (completeButton !== null) {
+      completeButton.addEventListener("click", (event) => {
+        const id = event.target.getAttribute("activity-id");
+        const confirmation = confirm(
+          "Are you sure you want to complete this activity?"
+        );
+        if (confirmation) {
+          completeActivity(id);
+        }
+      });
+    }
+
     // Format the start and end timestamps
     startTimestampElement.textContent = formatKoreanTime(
       new Date(startTimestamp / 1000000)
@@ -159,6 +172,35 @@ function deleteActivity(id) {
       } else {
         // Handle error here
         console.error("Failed to delete activity");
+      }
+    })
+    .catch((error) => {
+      // Handle network error
+      console.error("Network error:", error);
+    });
+}
+
+function completeActivity(id) {
+  const url = "http://localhost:8080/complete";
+  const data = { id };
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then(async (response) => {
+      if (response.ok) {
+        // Successfully deleted, you can update the UI here if needed
+        console.log("Activity completed successfully");
+        window.location.reload();
+      } else {
+        // Handle error here
+        console.error("Failed to complete activity");
+        const reason = await response.text();
+        // convert response body to string
+        alert(`Failed to complete activity: ${reason}.`);
       }
     })
     .catch((error) => {

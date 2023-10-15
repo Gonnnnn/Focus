@@ -15,7 +15,7 @@
       padding: 0;
     }
 
-    .activity-item {
+    .activity-list .activity-item {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -29,7 +29,13 @@
       word-break: break-all;
     }
 
-    .delete-button {
+    .activity-item .buttons {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .activity-item .delete-button {
       top: 5px;
       right: 5px;
       background-color: #000; /* Customize button style as needed */
@@ -42,7 +48,20 @@
       cursor: pointer;
     }
 
-    .description-box {
+    .activity-item .complete-button {
+      top: 5px;
+      right: 5px;
+      background-color: greenyellow; /* Customize button style as needed */
+      color: #fff;
+      border: none;
+      border-radius: 80%;
+      width: 25px;
+      height: 25px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .activity-item .description-box {
       border: 1px solid #ddd;
       border-radius: 10px;
       padding: 10px;
@@ -58,7 +77,7 @@
   <body>
     <h1>You need to FOCUS on</h1>
     <ul class="activity-list">
-      {{ range $index, $activity := .Activities }}
+      {{ if .Activities }} {{ range $index, $activity := .Activities }}
       <li class="activity-item" id="{{ $index }}">
         <div class="activity-item-content">
           <div class="activity-title">
@@ -85,15 +104,22 @@
             >
           </div>
         </div>
-        <button class="delete-button" activity-id="{{ .Id }}">X</button>
+        <div class="buttons">
+          <button class="delete-button" activity-id="{{ .Id }}">X</button>
+          {{ if not .Complete }}
+          <button class="complete-button" activity-id="{{ .Id }}">V</button>
+          {{ end }}
+        </div>
       </li>
       <br />
+      {{ end }} {{ else }}
+      <div>No Activity</div>
       {{ end }}
     </ul>
 
     <h1>Add More</h1>
     <form id="createActivityForm">
-      <div class="box">
+      <div>
         <h2><label for="title">Goal</label></h2>
         <textarea
           type="text"
@@ -113,7 +139,7 @@
           required
         ></textarea>
       </div>
-      <div class="box">
+      <div>
         <h2><label for="startTime">Start Time</label></h2>
         <input
           type="datetime-local"
