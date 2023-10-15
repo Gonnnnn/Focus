@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Get all activity list items
   const activityItems = document.querySelectorAll(".activity-item");
+  const currentTime = new Date();
 
   activityItems.forEach(function (activityItem) {
     const startTimestampElement = activityItem.querySelector(
@@ -45,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
       new Date(endTimestamp / 1000000)
     );
 
-    const currentTime = new Date();
     const progressPercentage = calculateProgress(
       currentTime.getTime() * 1000000,
       startTimestamp,
@@ -64,49 +64,49 @@ document.addEventListener("DOMContentLoaded", function () {
     setInterval(function () {
       location.reload();
     }, 60000);
+  });
 
-    const createActivityForm = document.getElementById("createActivityForm");
-    const startTimeInput = createActivityForm.querySelector("#startTime");
-    const endTimeInput = createActivityForm.querySelector("#endTime");
+  const createActivityForm = document.getElementById("createActivityForm");
+  const startTimeInput = createActivityForm.querySelector("#startTime");
+  const endTimeInput = createActivityForm.querySelector("#endTime");
 
-    // Set the start time to the current time
-    const defaultTimeInput = getCreateFormDateTime(currentTime);
-    startTimeInput.value = defaultTimeInput;
-    endTimeInput.value = defaultTimeInput;
+  // Set the start time to the current time
+  const defaultTimeInput = getCreateFormDateTime(currentTime);
+  startTimeInput.value = defaultTimeInput;
+  endTimeInput.value = defaultTimeInput;
 
-    // Set the create activity form handler.
-    createActivityForm.addEventListener("submit", function (event) {
-      event.preventDefault();
+  // Set the create activity form handler.
+  createActivityForm.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-      const formData = new FormData(this);
-      const activityName = formData.get("title");
-      const activityDescription = formData.get("description");
-      const startTimeNano =
-        new Date(formData.get("startTime")).getTime() * 1000000;
-      const endTimeNano = new Date(formData.get("endTime")).getTime() * 1000000;
+    const formData = new FormData(this);
+    const activityName = formData.get("title");
+    const activityDescription = formData.get("description");
+    const startTimeNano =
+      new Date(formData.get("startTime")).getTime() * 1000000;
+    const endTimeNano = new Date(formData.get("endTime")).getTime() * 1000000;
 
-      // Send a POST request to http://localhost:8080
-      fetch("http://localhost:8080", {
-        method: "POST",
-        body: JSON.stringify({
-          title: activityName,
-          description: activityDescription,
-          startTimestamp: startTimeNano,
-          endTimestamp: endTimeNano,
-        }),
+    // Send a POST request to http://localhost:8080
+    fetch("http://localhost:8080", {
+      method: "POST",
+      body: JSON.stringify({
+        title: activityName,
+        description: activityDescription,
+        startTimestamp: startTimeNano,
+        endTimestamp: endTimeNano,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          alert("Activity created successfully!");
+          window.location.reload();
+        } else {
+          alert("Failed to create activity. Please try again.");
+        }
       })
-        .then((response) => {
-          if (response.ok) {
-            alert("Activity created successfully!");
-            window.location.reload();
-          } else {
-            alert("Failed to create activity. Please try again.");
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    });
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   });
 });
 
