@@ -79,6 +79,8 @@ async function deleteButtonClickHandler(id) {
     alert(`Failed to delete activity: ${reason}.`);
     return;
   }
+
+  location.reload();
 }
 
 async function completeButtonClickHandler(id) {
@@ -95,6 +97,8 @@ async function completeButtonClickHandler(id) {
     alert(`Failed to complete activity: ${reason}.`);
     return;
   }
+
+  location.reload();
 }
 
 async function createFormClickHandler(event) {
