@@ -5,21 +5,12 @@ const EXPIRED = "EXPIRED";
 const BASE_URL = "http://localhost:8080";
 
 class Activity {
-  constructor(
-    id,
-    title,
-    description,
-    startTimestamp,
-    endTimestamp,
-    createdAt,
-    status
-  ) {
+  constructor(id, title, description, startTimestamp, endTimestamp, status) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.startTimestamp = startTimestamp;
     this.endTimestamp = endTimestamp;
-    this.createdAt = createdAt;
     this.status = status;
   }
 
@@ -73,14 +64,16 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     const endTimestamp = parseInt(endTimestampElement.textContent.trim());
 
+    const statusElement = activityItem.querySelector(".activity-status-value");
+    const status = statusElement.textContent.trim();
+
     const activity = new Activity(
       id,
       title,
       description,
       startTimestamp,
       endTimestamp,
-      0,
-      ""
+      status
     );
     activities[id] = activity;
 
@@ -195,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (activityItem) {
       activityItem.remove();
     }
-    console.log("Activity completed successfully.");
+    console.log("Activity deleted successfully.");
   });
 });
 
