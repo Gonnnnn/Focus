@@ -26,6 +26,23 @@ type Activity struct {
 	StartTimestamp int64
 	// The end timestamp of the activity. E.g. 1234567890
 	EndTimestamp int64
-	// The indicator whether the activity is done or not. E.g. true
-	Complete bool
+	// The timestamp when the activity was created. E.g. 1234567890
+	CreatedAt int64
+	// The status of the activity. E.g. "IN_PROGRESS"
+	Status Status
 }
+
+type Status string
+
+const (
+	Unknown Status = "UNKNOWN"
+	// The activity is not started if the current timestamp is less than the start timestamp.
+	NotStarted Status = "NOT_STARTED"
+	// The activity is in progress if the current timestamp is greater than the start timestamp.
+	InProgress Status = "IN_PROGRESS"
+	// The activity is complete if the user completes the activity by themselves.
+	Complete Status = "COMPLETE"
+	// The activity is expired if the current timestamp is greater than the end timestamp
+	// while the activity is not completed yet.
+	Expired Status = "EXPIRED"
+)

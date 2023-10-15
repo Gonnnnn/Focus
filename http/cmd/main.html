@@ -106,7 +106,8 @@
         </div>
         <div class="buttons">
           <button class="delete-button" activity-id="{{ .Id }}">X</button>
-          {{ if not .Complete }}
+          {{ if and (not (eq .Status "COMPLETE")) (not (eq .Status "EXPIRED"))
+          }}
           <button class="complete-button" activity-id="{{ .Id }}">V</button>
           {{ end }}
         </div>

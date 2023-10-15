@@ -2,7 +2,6 @@ package impl
 
 import (
 	"errors"
-	"fmt"
 	"focus"
 	"focus/activity"
 
@@ -23,7 +22,7 @@ func (i *impl) CreateActivity(title string, description string, startTimestamp i
 	if err != nil {
 		return nil, err
 	}
-	return convertToFocusActivity(activity), nil
+	return ConvertToFocusActivity(activity, i.clock.Now().Unix()), nil
 }
 
 func (i *impl) Activity(id string) (*focus.Activity, error) {
@@ -31,7 +30,7 @@ func (i *impl) Activity(id string) (*focus.Activity, error) {
 	if err != nil {
 		return nil, err
 	}
-	return convertToFocusActivity(activity), nil
+	return ConvertToFocusActivity(activity, i.clock.Now().Unix()), nil
 }
 
 func (i *impl) Activities(ids []string) ([]*focus.Activity, error) {
@@ -41,7 +40,7 @@ func (i *impl) Activities(ids []string) ([]*focus.Activity, error) {
 	}
 	focusActivities := make([]*focus.Activity, 0, len(activities))
 	for _, activity := range activities {
-		focusActivities = append(focusActivities, convertToFocusActivity(activity))
+		focusActivities = append(focusActivities, ConvertToFocusActivity(activity, i.clock.Now().Unix()))
 	}
 	return focusActivities, nil
 }
@@ -60,11 +59,11 @@ func (i *impl) CompleteActivity(id string) (*focus.Activity, error) {
 		return nil, err
 	}
 
-	if activity.Complete {
-		return convertToFocusActivity(activity), nil
-	}
-
 	now := i.clock.Now().Unix()
+
+	if activity.Complete {
+		return ConvertToFocusActivity(activity, now), nil
+	}
 
 	if activity.StartTimestamp > now {
 		return nil, errors.New("expected start time is not yet passed")
@@ -79,15 +78,5 @@ func (i *impl) CompleteActivity(id string) (*focus.Activity, error) {
 		return nil, err
 	}
 
-	return  convertToFocusActivity(activity), nil
-}
-
-func convertToFocusActivity(activity *activity.Activity) *focus.Activity {
-	return &focus.Activity{
-		Id:            	fmt.Sprintf("%d", activity.Id),
-		Title:          activity.Title,
-		Description:    activity.Description,
-		StartTimestamp: activity.StartTimestamp,
-		EndTimestamp:   activity.EndTimestamp,
-	}
+	return  ConvertToFocusActivity(activity, now), nil
 }
