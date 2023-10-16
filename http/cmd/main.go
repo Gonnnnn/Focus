@@ -39,7 +39,7 @@ func main() {
 	router.POST("/complete", controller.Complete)
 	router.GET("/health", controller.Health)
 
-	port := 8080
+	port := 2020
 	if err := router.Run(fmt.Sprintf(":%d", port)); err != nil {
 		log.Fatal(err)
 	}

@@ -2,8 +2,10 @@ const COMPLETE = "COMPLETE";
 const IN_PROGRESS = "IN_PROGRESS";
 const NOT_STARTED = "NOT_STARTED";
 const EXPIRED = "EXPIRED";
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "http://localhost:2020";
 
+// TODO(kim.geon): When the activity starts, notify the user.
+// TODO(kim.geon): When the activity is completed, don't update the progress bar anymore.
 function initActivityItem(activityItem) {
   // Initialize timestamps.
   const currentTime = new Date();

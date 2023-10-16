@@ -15,6 +15,7 @@ type Repository interface {
 	CompleteActivity(activity *Activity) (*Activity, error)
 }
 
+// TODO(kim.geon): Add a timestamp when the activity was completed. It may not need complete field anymore.
 type Activity struct {
 	// The unique identifier for the activity. E.g. 1
 	Id uint `gorm:"primaryKey;autoIncrement"`
